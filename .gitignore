@@ -126,3 +126,4 @@ app.*.symbols
 
 /windows/
 /build/
+/linux/
