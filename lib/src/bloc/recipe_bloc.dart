@@ -15,7 +15,10 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       (event, emit) async {
         emit(RecipeLodaingState());
         try {
-          final recipe = await _repository.getRecipe();
+          final recipe = await _repository.getRecipe(
+            startPage: 1,
+            finalPage: 10,
+          );
           var rows = recipe.COOKRCP01['row'];
           List<RecipeRows> rowList = [];
           for (var r in rows) {
@@ -35,7 +38,10 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
               ? 'RCP_NM'
               : 'RCP_PARTS_DTLS': event.param.values.first
         };
-        final recipe = await _repository.getRecipe(qurey: qureyParam);
+        final recipe = await _repository.getRecipe(
+            startPage: event.startPage,
+            finalPage: event.finalPage,
+            qurey: qureyParam);
         var rows = recipe.COOKRCP01['row'];
         List<RecipeRows> rowList = [];
         for (var r in rows) {

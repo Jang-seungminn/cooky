@@ -60,6 +60,8 @@ class _HomePageState extends State<HomePage> {
                 splashRadius: 25,
                 onPressed: () {
                   context.read<RecipeBloc>().add(SearchRecipeEvent(
+                        startPage: 1,
+                        finalPage: 50,
                         param: {type: textController.value.text},
                       ));
                   if (textController.value.text != '') {

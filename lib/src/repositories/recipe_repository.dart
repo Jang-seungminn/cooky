@@ -4,11 +4,16 @@ import 'package:cooky/src/network/network_service.dart';
 
 class RecipeRepository {
   final String _baseUrl =
-      'http://openapi.foodsafetykorea.go.kr/api/7cc01f89be7f4324a803/COOKRCP01/json/1/10/';
+      'http://openapi.foodsafetykorea.go.kr/api/7cc01f89be7f4324a803/COOKRCP01/json/';
 
-  Future<Recipe> getRecipe({Map<String, String>? qurey}) async {
+  Future<Recipe> getRecipe(
+      {Map<String, String>? qurey,
+      required int startPage,
+      required int finalPage}) async {
     final response = await NetworkService.sendRequest(
-        requestType: RequestType.get, url: _baseUrl, queryParam: qurey);
+        requestType: RequestType.get,
+        url: '$_baseUrl$startPage/$finalPage/',
+        queryParam: qurey);
     return NetworkHelper.filterResponse(
         callBack: (json) => Recipe.fromJson(json),
         response: response,

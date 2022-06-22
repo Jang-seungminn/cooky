@@ -91,5 +91,3 @@ class RecipeCard extends StatelessWidget {
     );
   }
 }
-            // _content(param[paramKeyList[1]][valueKeyList[0]]),
-            // _content(param[paramKeyList[1]][valueKeyList[1]]),

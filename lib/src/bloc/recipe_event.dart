@@ -11,6 +11,12 @@ class LoadRecipeEvent extends RecipeEvent {}
 
 class SearchRecipeEvent extends RecipeEvent {
   final Map<SearchType, String> param;
+  final int startPage;
+  final int finalPage;
 
-  const SearchRecipeEvent({required this.param});
+  const SearchRecipeEvent({
+    required this.param,
+    required this.startPage,
+    required this.finalPage,
+  });
 }
