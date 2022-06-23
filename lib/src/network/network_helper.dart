@@ -12,7 +12,7 @@ class NetworkHelper {
     if (queryParameters == null || queryParameters.isEmpty) {
       return url;
     }
-    final StringBuffer stringBuffer = StringBuffer("$url");
+    final StringBuffer stringBuffer = StringBuffer(url);
     queryParameters.forEach((key, value) {
       if (value.trim() == '') return;
       if (value.contains(' ')) throw Exception('Invalid Input Exception');

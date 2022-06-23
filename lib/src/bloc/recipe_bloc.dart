@@ -39,8 +39,8 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
               : 'RCP_PARTS_DTLS': event.param.values.first
         };
         final recipe = await _repository.getRecipe(
-            startPage: event.startPage,
-            finalPage: event.finalPage,
+            startPage: event.startIndex,
+            finalPage: event.endIndex,
             qurey: qureyParam);
         var rows = recipe.COOKRCP01['row'];
         List<RecipeRows> rowList = [];

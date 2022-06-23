@@ -15,16 +15,31 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late SearchType type;
+  TextEditingController textController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     type = SearchType.cookName;
   }
 
+  var startIndex = 1;
+  void changeStartIndex(int page) {
+    setState(() {
+      startIndex = page;
+    });
+  }
+
+  var endIndex = 50;
+  void changeEndIndex(int page) {
+    setState(() {
+      endIndex = page;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> typeList = ['요리 이름으로 찾기', '재료들로 찾기'];
-    TextEditingController textController = TextEditingController();
     void _getSearchType(SearchType pType) {
       setState(() {
         type = pType;
@@ -60,8 +75,8 @@ class _HomePageState extends State<HomePage> {
                 splashRadius: 25,
                 onPressed: () {
                   context.read<RecipeBloc>().add(SearchRecipeEvent(
-                        startPage: 1,
-                        finalPage: 50,
+                        startIndex: startIndex,
+                        endIndex: endIndex,
                         param: {type: textController.value.text},
                       ));
                   if (textController.value.text != '') {
@@ -78,7 +93,13 @@ class _HomePageState extends State<HomePage> {
             )
           ],
         ),
-        const RecipeWidget(),
+        RecipeWidget(
+          startIndex: startIndex,
+          changeStartIndex: changeStartIndex,
+          endIndex: endIndex,
+          changeEndIndex: changeEndIndex,
+          searchWord: {type: textController.value.text},
+        ),
       ],
     );
   }
