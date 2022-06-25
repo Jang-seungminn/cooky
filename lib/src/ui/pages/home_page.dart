@@ -16,11 +16,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late SearchType type;
   TextEditingController textController = TextEditingController();
+  late Map<SearchType, String> searchWord;
 
   @override
   void initState() {
     super.initState();
+
     type = SearchType.cookName;
+    searchWord = {type: textController.text};
   }
 
   var startIndex = 1;
@@ -30,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  var endIndex = 50;
+  var endIndex = 1000;
   void changeEndIndex(int page) {
     setState(() {
       endIndex = page;
@@ -74,11 +77,18 @@ class _HomePageState extends State<HomePage> {
               child: IconButton(
                 splashRadius: 25,
                 onPressed: () {
-                  context.read<RecipeBloc>().add(SearchRecipeEvent(
-                        startIndex: startIndex,
-                        endIndex: endIndex,
-                        param: {type: textController.value.text},
-                      ));
+                  setState(() {
+                    startIndex = 1;
+                    endIndex = 1000;
+                    searchWord = {type: textController.text};
+                  });
+                  context.read<RecipeBloc>().add(
+                        SearchRecipeEvent(
+                          startIndex: startIndex,
+                          endIndex: endIndex,
+                          param: searchWord,
+                        ),
+                      );
                   if (textController.value.text != '') {
                     if (kDebugMode) {
                       print(textController.value.text);
@@ -93,12 +103,14 @@ class _HomePageState extends State<HomePage> {
             )
           ],
         ),
-        RecipeWidget(
-          startIndex: startIndex,
-          changeStartIndex: changeStartIndex,
-          endIndex: endIndex,
-          changeEndIndex: changeEndIndex,
-          searchWord: {type: textController.value.text},
+        Expanded(
+          child: RecipeWidget(
+            startIndex: startIndex,
+            changeStartIndex: changeStartIndex,
+            endIndex: endIndex,
+            changeEndIndex: changeEndIndex,
+            searchWord: searchWord,
+          ),
         ),
       ],
     );

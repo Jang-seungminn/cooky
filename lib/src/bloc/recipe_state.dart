@@ -22,6 +22,8 @@ class RecipeLoadedState extends RecipeState {
   const RecipeLoadedState(this.recipe, this.rows);
 }
 
+class RecipeSearchingState extends RecipeState {}
+
 class RecipeSearchedState extends RecipeState {
   final Recipe recipe;
   final List<RecipeRows> rows;

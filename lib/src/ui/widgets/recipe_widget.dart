@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cooky/src/bloc/recipe_bloc.dart';
 import 'package:cooky/src/ui/components/recipe_card.dart';
 import 'package:cooky/src/utils/const.dart';
@@ -27,6 +25,8 @@ class RecipeWidget extends StatefulWidget {
 class _RecipeWidgetState extends State<RecipeWidget> {
   ScrollController scrollController = ScrollController();
 
+  late int totalConut;
+
   @override
   void dispose() {
     scrollController.dispose();
@@ -35,26 +35,36 @@ class _RecipeWidgetState extends State<RecipeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    void changeIndex(String ch) async {
+    void changeIndex(String ch) {
+      bool isChange = false;
       int start = widget.startIndex;
       int end = widget.endIndex;
+
       if (ch == '+') {
-        start += 50;
-        end += 50;
+        if (end < totalConut) {
+          start += 1000;
+          end += 1000;
+          isChange = true;
+        }
       } else {
-        start -= 50;
-        end -= 50;
+        if (start > 1) {
+          start -= 1000;
+          end -= 1000;
+          isChange = true;
+        }
       }
 
       widget.changeStartIndex(start);
       widget.changeEndIndex(end);
-      context.read<RecipeBloc>().add(
-            SearchRecipeEvent(
-              param: widget.searchWord,
-              startIndex: start,
-              endIndex: end,
-            ),
-          );
+      if (isChange) {
+        context.read<RecipeBloc>().add(
+              SearchRecipeEvent(
+                param: widget.searchWord,
+                startIndex: start,
+                endIndex: end,
+              ),
+            );
+      }
     }
 
     scrollController.addListener(() {
@@ -62,14 +72,9 @@ class _RecipeWidgetState extends State<RecipeWidget> {
         if (scrollController.position.minScrollExtent ==
             scrollController.position.pixels) {
           changeIndex('-');
-          widget.changeStartIndex(widget.startIndex - 50);
-          widget.changeEndIndex(widget.endIndex - 50);
-        }
-        if (scrollController.position.maxScrollExtent ==
+        } else if (scrollController.position.maxScrollExtent ==
             scrollController.position.pixels) {
           changeIndex('+');
-          widget.changeStartIndex(widget.startIndex + 50);
-          widget.changeEndIndex(widget.endIndex + 50);
         }
       }
     });
@@ -79,6 +84,10 @@ class _RecipeWidgetState extends State<RecipeWidget> {
         padding: const EdgeInsets.all(20),
         child: BlocBuilder<RecipeBloc, RecipeState>(
           builder: (context, state) {
+            if (state is RecipeSearchingState) {
+              return const CircularProgressIndicator();
+            }
+
             if (state is RecipeErrorState) {
               return Text(
                 state.message,
@@ -90,11 +99,13 @@ class _RecipeWidgetState extends State<RecipeWidget> {
             }
 
             if (state is RecipeSearchedState) {
+              totalConut = int.parse(state.recipe.COOKRCP01['total_count']);
+
               return Column(
                 children: [
-                  Text(state.recipe.COOKRCP01['total_count']),
+                  Text(totalConut.toString()),
                   SizedBox(
-                    height: 400,
+                    height: 450,
                     child: ListView.builder(
                       itemCount: state.rows.length,
                       controller: scrollController,
@@ -131,7 +142,7 @@ class _RecipeWidgetState extends State<RecipeWidget> {
               );
             }
 
-            return const CircularProgressIndicator();
+            return Container();
           },
         ),
       ),

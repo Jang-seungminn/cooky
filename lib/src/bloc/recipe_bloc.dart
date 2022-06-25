@@ -31,7 +31,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       },
     );
     on<SearchRecipeEvent>((event, emit) async {
-      emit(RecipeLodaingState());
+      emit(RecipeSearchingState());
       try {
         final Map<String, String> qureyParam = {
           event.param.keys.first == SearchType.cookName
