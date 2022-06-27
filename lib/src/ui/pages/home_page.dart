@@ -17,6 +17,7 @@ class _HomePageState extends State<HomePage> {
   late SearchType type;
   TextEditingController textController = TextEditingController();
   late Map<SearchType, String> searchWord;
+  bool isPluralOk = false;
 
   @override
   void initState() {
@@ -40,12 +41,21 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Set<String> integrationList = {};
+
   @override
   Widget build(BuildContext context) {
     List<String> typeList = ['요리 이름으로 찾기', '재료들로 찾기'];
     void _getSearchType(SearchType pType) {
       setState(() {
         type = pType;
+
+        if (type == SearchType.integrationName) {
+          isPluralOk = true;
+        } else {
+          integrationList = {};
+          isPluralOk = false;
+        }
       });
     }
 
@@ -72,6 +82,27 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            Visibility(
+              visible: isPluralOk,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: IconButton(
+                  splashRadius: 25,
+                  onPressed: () {
+                    if (textController.text.isNotEmpty) {
+                      setState(() {
+                        integrationList.add(textController.text);
+                        textController.clear();
+                      });
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.add,
+                    size: 30,
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: IconButton(
@@ -82,17 +113,21 @@ class _HomePageState extends State<HomePage> {
                     endIndex = 1000;
                     searchWord = {type: textController.text};
                   });
-                  context.read<RecipeBloc>().add(
-                        SearchRecipeEvent(
-                          startIndex: startIndex,
-                          endIndex: endIndex,
-                          param: searchWord,
-                        ),
-                      );
-                  if (textController.value.text != '') {
-                    if (kDebugMode) {
-                      print(textController.value.text);
-                    }
+
+                  if (type == SearchType.cookName) {
+                    context.read<RecipeBloc>().add(
+                          SearchRecipeEvent(
+                            startIndex: startIndex,
+                            endIndex: endIndex,
+                            param: searchWord,
+                          ),
+                        );
+                  } else {
+                    context.read<RecipeBloc>().add(
+                        SearchRecipeWithIntegrationsEvent(
+                            integrationList: integrationList,
+                            startIndex: startIndex,
+                            endIndex: endIndex));
                   }
                 },
                 icon: const Icon(
@@ -103,14 +138,39 @@ class _HomePageState extends State<HomePage> {
             )
           ],
         ),
-        Expanded(
-          child: RecipeWidget(
-            startIndex: startIndex,
-            changeStartIndex: changeStartIndex,
-            endIndex: endIndex,
-            changeEndIndex: changeEndIndex,
-            searchWord: searchWord,
+        Visibility(
+          visible: isPluralOk,
+          child: SizedBox(
+            height: integrationList.isNotEmpty ? 40 : 0,
+            child: ListView.builder(
+              itemCount: integrationList.length,
+              itemBuilder: (context, index) {
+                if (integrationList.isNotEmpty) {
+                  return TextButton(
+                      onPressed: () {
+                        setState(() {
+                          integrationList
+                              .remove(integrationList.toList()[index]);
+                        });
+                      },
+                      child: Text(
+                        integrationList.toList()[index],
+                        style: const TextStyle(fontSize: 20),
+                      ));
+                } else {
+                  return Container();
+                }
+              },
+              scrollDirection: Axis.horizontal,
+            ),
           ),
+        ),
+        RecipeWidget(
+          startIndex: startIndex,
+          changeStartIndex: changeStartIndex,
+          endIndex: endIndex,
+          changeEndIndex: changeEndIndex,
+          searchWord: searchWord,
         ),
       ],
     );

@@ -20,3 +20,15 @@ class SearchRecipeEvent extends RecipeEvent {
     required this.endIndex,
   });
 }
+
+class SearchRecipeWithIntegrationsEvent extends RecipeEvent {
+  final Set<String> integrationList;
+  final int startIndex;
+  final int endIndex;
+
+  const SearchRecipeWithIntegrationsEvent({
+    required this.integrationList,
+    required this.startIndex,
+    required this.endIndex,
+  });
+}

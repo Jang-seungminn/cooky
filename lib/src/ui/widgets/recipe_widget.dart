@@ -105,7 +105,7 @@ class _RecipeWidgetState extends State<RecipeWidget> {
                 children: [
                   Text(totalConut.toString()),
                   SizedBox(
-                    height: 450,
+                    height: 400,
                     child: ListView.builder(
                       itemCount: state.rows.length,
                       controller: scrollController,

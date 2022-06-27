@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:cooky/src/models/recipe_model.dart';
 import 'package:cooky/src/repositories/recipe_repository.dart';
 import 'package:cooky/src/utils/const.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 
 part 'recipe_event.dart';
 part 'recipe_state.dart';
@@ -47,6 +50,38 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
         for (var r in rows) {
           rowList.add(RecipeRows.fromJson(r));
         }
+        emit(RecipeSearchedState(recipe, rowList));
+      } catch (e) {
+        emit(RecipeErrorState(e.toString()));
+      }
+    });
+
+    on<SearchRecipeWithIntegrationsEvent>((event, emit) async {
+      emit(RecipeSearchingState());
+      List<RecipeRows> rowList = [];
+      Map<String, int> pluralMap = {};
+      late Recipe recipe;
+      try {
+        for (var integration in event.integrationList) {
+          Map<String, String> qureyParam = {'RCP_PARTS_DTLS': integration};
+
+          recipe = await _repository.getRecipe(
+              startPage: event.startIndex,
+              finalPage: event.endIndex,
+              qurey: qureyParam);
+          var rows = recipe.COOKRCP01['row'];
+          for (var r in rows) {
+            pluralMap[RecipeRows.fromJson(r).RCP_NM] =
+                pluralMap[RecipeRows.fromJson(r).RCP_NM] == null
+                    ? 1
+                    : pluralMap[RecipeRows.fromJson(r).RCP_NM]! + 1;
+            if (pluralMap[RecipeRows.fromJson(r).RCP_NM] ==
+                event.integrationList.length) {
+              rowList.add(RecipeRows.fromJson(r));
+            }
+          }
+        }
+
         emit(RecipeSearchedState(recipe, rowList));
       } catch (e) {
         emit(RecipeErrorState(e.toString()));
