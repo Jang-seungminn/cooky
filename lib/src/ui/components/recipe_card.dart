@@ -28,32 +28,52 @@ class RecipeCard extends StatelessWidget {
         } else if (content.contains('http')) {
           widgetList.add(SizedBox(
             width: screenSize.width * 0.7,
-            child: Image.network(
-              content,
-              fit: BoxFit.fill,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Image.network(
+                content,
+                fit: BoxFit.fill,
+              ),
             ),
           ));
         } else {
           if (contentList.containsKey('RCP_PARTS_DTLS')) {
-            var integrations = content.split('\n');
-            for (var i = 0; i < integrations.length; i++) {
-              if (i.isEven) {
-                widgetList.add(
-                  Text(
-                    integrations[i],
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+            content.replaceAll('\n', '\n\n');
+            widgetList.add(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text(
+                  content.replaceAll('\n', '\n\n'),
+                  style: const TextStyle(
+                    fontSize: 14,
                   ),
-                );
-              } else {
-                widgetList.add(Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(integrations[i]),
-                ));
-              }
-            }
+                ),
+              ),
+            );
+          } else if (contentList.containsKey('RCP_NM')) {
+            widgetList.add(
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  content,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            );
           } else {
-            widgetList.add(Text(content));
+            widgetList.add(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  content.replaceAll('\n', ''),
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+            );
           }
         }
       }

@@ -99,7 +99,10 @@ class _RecipeWidgetState extends State<RecipeWidget> {
             }
 
             if (state is RecipeSearchedState) {
-              totalConut = int.parse(state.recipe.COOKRCP01['total_count']);
+              totalConut =
+                  int.parse(state.recipe.COOKRCP01['total_count']) > 1000
+                      ? int.parse(state.recipe.COOKRCP01['total_count'])
+                      : state.rows.length;
 
               return Column(
                 children: [

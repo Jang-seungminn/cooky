@@ -34,11 +34,11 @@ class NetworkService {
   }) async {
     try {
       // final _header = _getHeaders();
-      final _url = NetworkHelper.concatUrlQP(url, queryParam);
+      final responseUrl = NetworkHelper.concatUrlQP(url, queryParam);
 
       final response = await _createRequest(
           requestType: requestType,
-          uri: Uri.parse(_url),
+          uri: Uri.parse(responseUrl),
           // headers: _header,
           body: body);
 
