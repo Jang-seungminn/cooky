@@ -128,3 +128,6 @@ app.*.symbols
 /build/
 /linux/
 /web/
+
+#User Setting
+lib/src/utils/api_key.dart

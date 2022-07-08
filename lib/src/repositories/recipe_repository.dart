@@ -1,10 +1,11 @@
 import 'package:cooky/src/models/recipe_model.dart';
 import 'package:cooky/src/network/network_helper.dart';
 import 'package:cooky/src/network/network_service.dart';
+import 'package:cooky/src/utils/api_key.dart';
 
 class RecipeRepository {
   final String _baseUrl =
-      'http://openapi.foodsafetykorea.go.kr/api/7cc01f89be7f4324a803/COOKRCP01/json/';
+      'http://openapi.foodsafetykorea.go.kr/api/$apiKey/COOKRCP01/json/';
 
   Future<Recipe> getRecipe(
       {Map<String, String>? qurey,
