@@ -38,15 +38,29 @@ class RecipeCard extends StatelessWidget {
           ));
         } else {
           if (contentList.containsKey('RCP_PARTS_DTLS')) {
-            content.replaceAll('\n', '\n\n');
             widgetList.add(
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Text(
-                  content.replaceAll('\n', '\n\n'),
-                  style: const TextStyle(
-                    fontSize: 14,
-                  ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
+                child: Column(
+                  children: [
+                    const Text(
+                      '재료',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Text(
+                      content.replaceAll('\n', '\n\n'),
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -64,13 +78,26 @@ class RecipeCard extends StatelessWidget {
                 ),
               ),
             );
+          } else if (contentList.keys.toList().first.startsWith('INFO')) {
+            widgetList.add(
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  content,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 22,
+                  ),
+                ),
+              ),
+            );
           } else {
             widgetList.add(
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
                   content.replaceAll('\n', ''),
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 20),
                 ),
               ),
             );
@@ -98,10 +125,13 @@ class RecipeCard extends StatelessWidget {
           width: screenSize.width * 0.75,
           child: Card(
             child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: _contents(
-                  param.values.toList()[index],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _contents(
+                    param.values.toList()[index],
+                  ),
                 ),
               ),
             ),

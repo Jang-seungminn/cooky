@@ -10,28 +10,33 @@ class RootPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('Cooky'),
-        centerTitle: true,
-        elevation: 1,
-      ),
-      body: Consumer<NavigationProvider>(
-        builder: (context, provider, child) {
-          switch (provider.currentIndex) {
-            case 0:
-              return const HomePage();
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: const Text('Cooky'),
+          centerTitle: true,
+          elevation: 1,
+        ),
+        body: Consumer<NavigationProvider>(
+          builder: (context, provider, child) {
+            switch (provider.currentIndex) {
+              case 0:
+                return const HomePage();
 
-            case 1:
-              return const MyPage();
+              case 1:
+                return const MyPage();
 
-            default:
-              return const CircularProgressIndicator();
-          }
-        },
+              default:
+                return const CircularProgressIndicator();
+            }
+          },
+        ),
+        bottomNavigationBar: const BottomNavBar(),
       ),
-      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }

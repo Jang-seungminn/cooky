@@ -128,6 +128,7 @@ class _HomePageState extends State<HomePage> {
                             startIndex: startIndex,
                             endIndex: endIndex));
                   }
+                  FocusManager.instance.primaryFocus?.unfocus();
                 },
                 icon: const Icon(
                   Icons.search,

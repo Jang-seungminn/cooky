@@ -120,6 +120,8 @@ class _RecipeWidgetState extends State<RecipeWidget> {
                               context: context,
                               builder: (BuildContext context) {
                                 var recipePage = state.rows[index].toMap();
+                                recipePage.removeWhere(
+                                    (key, value) => key == 'HASHTAG');
                                 recipePage
                                     .removeWhere((key, value) => value == "");
 
