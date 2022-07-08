@@ -59,6 +59,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Column(
+      mainAxisSize: MainAxisSize.max,
       children: [
         RadioButton(
           typeList: typeList,
@@ -165,12 +166,14 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        RecipeWidget(
-          startIndex: startIndex,
-          changeStartIndex: changeStartIndex,
-          endIndex: endIndex,
-          changeEndIndex: changeEndIndex,
-          searchWord: searchWord,
+        Expanded(
+          child: RecipeWidget(
+            startIndex: startIndex,
+            changeStartIndex: changeStartIndex,
+            endIndex: endIndex,
+            changeEndIndex: changeEndIndex,
+            searchWord: searchWord,
+          ),
         ),
       ],
     );
