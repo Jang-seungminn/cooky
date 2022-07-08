@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class RecipeCard extends StatelessWidget {
+class RecipeCard extends StatefulWidget {
   final int itemCount;
   final Map<String, dynamic> recipeRows;
   const RecipeCard(
@@ -8,15 +9,40 @@ class RecipeCard extends StatelessWidget {
       : super(key: key);
 
   @override
+  State<RecipeCard> createState() => _RecipeCardState();
+}
+
+class _RecipeCardState extends State<RecipeCard> {
+  final controller = PageController(viewportFraction: 0.8, keepPage: true);
+  @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SizedBox(
-        height: screenSize.height * 0.8,
-        width: screenSize.width * 0.8,
-        child: recipeCard(recipeRows, screenSize),
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            height: screenSize.height * 0.8,
+            width: screenSize.width,
+            child: recipeCard(widget.recipeRows, screenSize),
+          ),
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        SmoothPageIndicator(
+          controller: controller,
+          count: widget.recipeRows.length,
+          effect: WormEffect(
+              dotHeight: 16,
+              dotWidth: 16,
+              type: WormType.thin,
+              activeDotColor: Theme.of(context).colorScheme.primary
+              // strokeWidth: 5,
+              ),
+        ),
+      ],
     );
   }
 
@@ -116,22 +142,19 @@ class RecipeCard extends StatelessWidget {
       }
     }
 
-    return ListView.builder(
+    return PageView.builder(
+      controller: controller,
       scrollDirection: Axis.horizontal,
       itemCount: param.length,
       itemBuilder: ((context, index) {
-        return SizedBox(
-          height: screenSize.height * 0.75,
-          width: screenSize.width * 0.75,
-          child: Card(
-            child: Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: _contents(
-                    param.values.toList()[index],
-                  ),
+        return Card(
+          child: Center(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: _contents(
+                  param.values.toList()[index],
                 ),
               ),
             ),
