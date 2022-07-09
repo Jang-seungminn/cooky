@@ -141,28 +141,40 @@ class _HomePageState extends State<HomePage> {
         ),
         Visibility(
           visible: isPluralOk,
-          child: SizedBox(
-            height: integrationList.isNotEmpty ? 40 : 0,
-            child: ListView.builder(
-              itemCount: integrationList.length,
-              itemBuilder: (context, index) {
-                if (integrationList.isNotEmpty) {
-                  return TextButton(
-                      onPressed: () {
-                        setState(() {
-                          integrationList
-                              .remove(integrationList.toList()[index]);
-                        });
-                      },
-                      child: Text(
-                        integrationList.toList()[index],
-                        style: const TextStyle(fontSize: 20),
-                      ));
-                } else {
-                  return Container();
-                }
-              },
-              scrollDirection: Axis.horizontal,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: SizedBox(
+              height: integrationList.isNotEmpty ? 40 : 0,
+              child: ListView.builder(
+                itemCount: integrationList.length,
+                itemBuilder: (context, index) {
+                  if (integrationList.isNotEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Theme.of(context).colorScheme.primary),
+                            borderRadius: BorderRadius.circular(20)),
+                        child: TextButton(
+                            onPressed: () {
+                              setState(() {
+                                integrationList
+                                    .remove(integrationList.toList()[index]);
+                              });
+                            },
+                            child: Text(
+                              integrationList.toList()[index],
+                              style: const TextStyle(fontSize: 20),
+                            )),
+                      ),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+                scrollDirection: Axis.horizontal,
+              ),
             ),
           ),
         ),

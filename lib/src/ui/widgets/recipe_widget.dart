@@ -106,7 +106,7 @@ class _RecipeWidgetState extends State<RecipeWidget> {
 
               return Column(
                 children: [
-                  Text(totalConut.toString()),
+                  // Text('레시피 ${totalConut.toString()}'),
                   Expanded(
                     child: ListView.builder(
                       itemCount: state.rows.length,
