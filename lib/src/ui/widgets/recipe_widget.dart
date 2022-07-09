@@ -81,7 +81,7 @@ class _RecipeWidgetState extends State<RecipeWidget> {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: BlocBuilder<RecipeBloc, RecipeState>(
           builder: (context, state) {
             if (state is RecipeSearchingState) {

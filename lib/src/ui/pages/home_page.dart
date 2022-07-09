@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.only(bottom: 8.0),
               child: IconButton(
                 splashRadius: 25,
                 onPressed: () {
@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
         Visibility(
           visible: isPluralOk,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.only(top: 8),
             child: SizedBox(
               height: integrationList.isNotEmpty ? 40 : 0,
               child: ListView.builder(
