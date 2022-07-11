@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
         if (type == SearchType.integrationName) {
           isPluralOk = true;
         } else {
-          integrationList = {};
+          // integrationList = {};
           isPluralOk = false;
         }
       });
@@ -85,9 +85,10 @@ class _HomePageState extends State<HomePage> {
             Visibility(
               visible: isPluralOk,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding:
+                    const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
                 child: IconButton(
-                  splashRadius: 25,
+                  splashRadius: 20,
                   onPressed: () {
                     if (textController.text.isNotEmpty) {
                       setState(() {
@@ -104,9 +105,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
+              padding: const EdgeInsets.only(bottom: 8.0, right: 5.0),
               child: IconButton(
-                splashRadius: 25,
+                splashRadius: 20,
                 onPressed: () {
                   setState(() {
                     startIndex = 1;
@@ -142,7 +143,7 @@ class _HomePageState extends State<HomePage> {
         Visibility(
           visible: isPluralOk,
           child: Padding(
-            padding: const EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.only(top: 3),
             child: SizedBox(
               height: integrationList.isNotEmpty ? 40 : 0,
               child: ListView.builder(
@@ -163,9 +164,22 @@ class _HomePageState extends State<HomePage> {
                                     .remove(integrationList.toList()[index]);
                               });
                             },
-                            child: Text(
-                              integrationList.toList()[index],
-                              style: const TextStyle(fontSize: 20),
+                            child: Stack(
+                              children: <Widget>[
+                                Text(
+                                  integrationList.toList()[index],
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                Transform.translate(
+                                  offset: const Offset(33, -8),
+                                  child: const Icon(
+                                    Icons.cancel_rounded,
+                                    size: 15,
+                                  ),
+                                ),
+                              ],
                             )),
                       ),
                     );
@@ -177,6 +191,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+        ),
+        const SizedBox(
+          height: 8,
         ),
         Expanded(
           child: RecipeWidget(

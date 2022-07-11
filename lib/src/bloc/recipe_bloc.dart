@@ -32,24 +32,28 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
     );
     on<SearchRecipeEvent>((event, emit) async {
       emit(RecipeSearchingState());
-      try {
-        final Map<String, String> qureyParam = {
-          event.param.keys.first == SearchType.cookName
-              ? 'RCP_NM'
-              : 'RCP_PARTS_DTLS': event.param.values.first
-        };
-        final recipe = await _repository.getRecipe(
-            startPage: event.startIndex,
-            finalPage: event.endIndex,
-            qurey: qureyParam);
-        var rows = recipe.COOKRCP01['row'];
-        List<RecipeRows> rowList = [];
-        for (var r in rows) {
-          rowList.add(RecipeRows.fromJson(r));
+      if (event.param.values.first == '') {
+        emit(const RecipeErrorState('검색된 결과가 없습니다.'));
+      } else {
+        try {
+          final Map<String, String> qureyParam = {
+            event.param.keys.first == SearchType.cookName
+                ? 'RCP_NM'
+                : 'RCP_PARTS_DTLS': event.param.values.first
+          };
+          final recipe = await _repository.getRecipe(
+              startPage: event.startIndex,
+              finalPage: event.endIndex,
+              qurey: qureyParam);
+          var rows = recipe.COOKRCP01['row'];
+          List<RecipeRows> rowList = [];
+          for (var r in rows) {
+            rowList.add(RecipeRows.fromJson(r));
+          }
+          emit(RecipeSearchedState(recipe, rowList));
+        } catch (e) {
+          emit(RecipeErrorState(e.toString()));
         }
-        emit(RecipeSearchedState(recipe, rowList));
-      } catch (e) {
-        emit(RecipeErrorState(e.toString()));
       }
     });
 
@@ -58,30 +62,38 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       List<RecipeRows> rowList = [];
       Map<String, int> pluralMap = {};
       late Recipe recipe;
-      try {
-        for (var integration in event.integrationList) {
-          Map<String, String> qureyParam = {'RCP_PARTS_DTLS': integration};
+      if (event.integrationList.isEmpty) {
+        emit(const RecipeErrorState('검색된 결과가 없습니다.'));
+      } else {
+        try {
+          for (var integration in event.integrationList) {
+            Map<String, String> qureyParam = {'RCP_PARTS_DTLS': integration};
 
-          recipe = await _repository.getRecipe(
-              startPage: event.startIndex,
-              finalPage: event.endIndex,
-              qurey: qureyParam);
-          var rows = recipe.COOKRCP01['row'];
-          for (var r in rows) {
-            pluralMap[RecipeRows.fromJson(r).RCP_NM] =
-                pluralMap[RecipeRows.fromJson(r).RCP_NM] == null
-                    ? 1
-                    : pluralMap[RecipeRows.fromJson(r).RCP_NM]! + 1;
-            if (pluralMap[RecipeRows.fromJson(r).RCP_NM] ==
-                event.integrationList.length) {
-              rowList.add(RecipeRows.fromJson(r));
+            recipe = await _repository.getRecipe(
+                startPage: event.startIndex,
+                finalPage: event.endIndex,
+                qurey: qureyParam);
+            var rows = recipe.COOKRCP01['row'];
+            for (var r in rows) {
+              pluralMap[RecipeRows.fromJson(r).RCP_NM] =
+                  pluralMap[RecipeRows.fromJson(r).RCP_NM] == null
+                      ? 1
+                      : pluralMap[RecipeRows.fromJson(r).RCP_NM]! + 1;
+              if (pluralMap[RecipeRows.fromJson(r).RCP_NM] ==
+                  event.integrationList.length) {
+                rowList.add(RecipeRows.fromJson(r));
+              }
             }
           }
-        }
 
-        emit(RecipeSearchedState(recipe, rowList));
-      } catch (e) {
-        emit(RecipeErrorState(e.toString()));
+          if (rowList.isEmpty) {
+            emit(const RecipeErrorState('검색된 결과가 없습니다.'));
+          } else {
+            emit(RecipeSearchedState(recipe, rowList));
+          }
+        } catch (e) {
+          emit(RecipeErrorState(e.toString()));
+        }
       }
     });
   }
