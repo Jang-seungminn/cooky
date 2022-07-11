@@ -158,29 +158,19 @@ class _HomePageState extends State<HomePage> {
                                 color: Theme.of(context).colorScheme.primary),
                             borderRadius: BorderRadius.circular(20)),
                         child: TextButton(
-                            onPressed: () {
-                              setState(() {
-                                integrationList
-                                    .remove(integrationList.toList()[index]);
-                              });
-                            },
-                            child: Stack(
-                              children: <Widget>[
-                                Text(
-                                  integrationList.toList()[index],
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Transform.translate(
-                                  offset: const Offset(33, -8),
-                                  child: const Icon(
-                                    Icons.cancel_rounded,
-                                    size: 15,
-                                  ),
-                                ),
-                              ],
-                            )),
+                          onPressed: () {
+                            setState(() {
+                              integrationList
+                                  .remove(integrationList.toList()[index]);
+                            });
+                          },
+                          child: Text(
+                            integrationList.toList()[index],
+                            style: const TextStyle(
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
                       ),
                     );
                   } else {

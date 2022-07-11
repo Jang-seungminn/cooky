@@ -73,15 +73,20 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
                 startPage: event.startIndex,
                 finalPage: event.endIndex,
                 qurey: qureyParam);
-            var rows = recipe.COOKRCP01['row'];
-            for (var r in rows) {
-              pluralMap[RecipeRows.fromJson(r).RCP_NM] =
-                  pluralMap[RecipeRows.fromJson(r).RCP_NM] == null
-                      ? 1
-                      : pluralMap[RecipeRows.fromJson(r).RCP_NM]! + 1;
-              if (pluralMap[RecipeRows.fromJson(r).RCP_NM] ==
-                  event.integrationList.length) {
-                rowList.add(RecipeRows.fromJson(r));
+
+            if (recipe.COOKRCP01['RESULT']['CODE'] == 'INFO-200') {
+              emit(const RecipeErrorState('검색된 결과가 없습니다.'));
+            } else {
+              var rows = recipe.COOKRCP01['row'];
+              for (var r in rows) {
+                pluralMap[RecipeRows.fromJson(r).RCP_NM] =
+                    pluralMap[RecipeRows.fromJson(r).RCP_NM] == null
+                        ? 1
+                        : pluralMap[RecipeRows.fromJson(r).RCP_NM]! + 1;
+                if (pluralMap[RecipeRows.fromJson(r).RCP_NM] ==
+                    event.integrationList.length) {
+                  rowList.add(RecipeRows.fromJson(r));
+                }
               }
             }
           }
@@ -92,6 +97,9 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
             emit(RecipeSearchedState(recipe, rowList));
           }
         } catch (e) {
+          if (e.toString().contains('Null')) {
+            emit(const RecipeErrorState('검색된 결과가 없습니다.'));
+          }
           emit(RecipeErrorState(e.toString()));
         }
       }
