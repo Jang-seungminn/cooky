@@ -48,6 +48,7 @@ class _HomePageState extends State<HomePage> {
     void _getSearchType(SearchType pType) {
       setState(() {
         type = pType;
+        textController.clear();
 
         if (type == SearchType.integrationName) {
           isPluralOk = true;

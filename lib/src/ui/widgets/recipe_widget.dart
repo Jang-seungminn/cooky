@@ -1,8 +1,11 @@
 import 'package:cooky/src/bloc/recipe_bloc.dart';
+import 'package:cooky/src/models/favorite_model.dart';
+import 'package:cooky/src/providers/db_provider.dart';
 import 'package:cooky/src/ui/components/recipe_card.dart';
 import 'package:cooky/src/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class RecipeWidget extends StatefulWidget {
   RecipeWidget({
@@ -24,8 +27,10 @@ class RecipeWidget extends StatefulWidget {
 
 class _RecipeWidgetState extends State<RecipeWidget> {
   ScrollController scrollController = ScrollController();
+  late DBProvider dbProvider;
 
   late int totalConut;
+  Set<int> favoriteIndexList = {};
 
   @override
   void dispose() {
@@ -35,6 +40,9 @@ class _RecipeWidgetState extends State<RecipeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    dbProvider = Provider.of<DBProvider>(context, listen: false);
+    List<FavoriteModel> favoriteList = dbProvider.data;
+
     void changeIndex(String ch) {
       bool isChange = false;
       int start = widget.startIndex;
@@ -99,6 +107,8 @@ class _RecipeWidgetState extends State<RecipeWidget> {
             }
 
             if (state is RecipeSearchedState) {
+              bool isFavorite = false;
+
               totalConut =
                   int.parse(state.recipe.COOKRCP01['total_count']) > 1000
                       ? int.parse(state.recipe.COOKRCP01['total_count'])
@@ -112,32 +122,88 @@ class _RecipeWidgetState extends State<RecipeWidget> {
                       itemCount: state.rows.length,
                       controller: scrollController,
                       itemBuilder: (context, index) {
-                        return TextButton(
-                          onPressed: () {
-                            showDialog(
-                              useSafeArea: true,
-                              context: context,
-                              builder: (BuildContext context) {
-                                var recipePage = state.rows[index].toMap();
-                                recipePage.removeWhere(
-                                    (key, value) => key == 'HASHTAG');
-                                recipePage
-                                    .removeWhere((key, value) => value == "");
+                        for (var data in favoriteList) {
+                          if (data.recipeName == state.rows[index].RCP_NM) {
+                            favoriteIndexList.add(index);
+                          }
+                        }
+                        if (favoriteIndexList.contains(index)) {
+                          isFavorite = true;
+                        } else {
+                          isFavorite = false;
+                        }
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              padding: const EdgeInsets.all(0),
+                              splashRadius: 15,
+                              onPressed: () async {
+                                if (favoriteIndexList.contains(index)) {
+                                  setState(() {
+                                    favoriteIndexList.remove(index);
+                                    for (var data in dbProvider.data) {
+                                      if (data.recipeName ==
+                                          state.rows[index].RCP_NM) {
+                                        dbProvider.removeItem(
+                                          data,
+                                        );
+                                      }
+                                    }
+                                  });
+                                } else {
+                                  setState(() {
+                                    favoriteIndexList.add(index);
+                                    dbProvider.getItem();
 
-                                return Center(
-                                  child: RecipeCard(
-                                    recipeRows: recipePage,
-                                    itemCount:
-                                        recipePage.values.toList().length,
-                                  ),
-                                );
+                                    dbProvider.createItem(
+                                      FavoriteModel(
+                                        recipeName: state.rows[index].RCP_NM,
+                                      ),
+                                    );
+                                  });
+                                }
                               },
-                            );
-                          },
-                          child: Text(
-                            state.rows[index].RCP_NM,
-                            style: const TextStyle(fontSize: 18),
-                          ),
+                              icon: Icon(
+                                isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border_outlined,
+                                color: isFavorite
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.black,
+                              ),
+                            ),
+                            Flexible(
+                              child: TextButton(
+                                onPressed: () {
+                                  showDialog(
+                                    useSafeArea: true,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      var recipePage =
+                                          state.rows[index].toMap();
+                                      recipePage.removeWhere(
+                                          (key, value) => key == 'HASHTAG');
+                                      recipePage.removeWhere(
+                                          (key, value) => value == "");
+
+                                      return Center(
+                                        child: RecipeCard(
+                                          recipeRows: recipePage,
+                                          itemCount:
+                                              recipePage.values.toList().length,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Text(
+                                  state.rows[index].RCP_NM,
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ),
+                            ),
+                          ],
                         );
                       },
                     ),
