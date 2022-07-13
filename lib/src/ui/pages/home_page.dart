@@ -152,25 +152,39 @@ class _HomePageState extends State<HomePage> {
                   if (integrationList.isNotEmpty) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Theme.of(context).colorScheme.primary),
-                            borderRadius: BorderRadius.circular(20)),
-                        child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              integrationList
-                                  .remove(integrationList.toList()[index]);
-                            });
-                          },
-                          child: Text(
-                            integrationList.toList()[index],
-                            style: const TextStyle(
-                              fontSize: 15,
+                      child: Stack(
+                        children: <Widget>[
+                          Positioned(
+                            top: -1,
+                            right: 5,
+                            child: Icon(
+                              Icons.remove_circle_outlined,
+                              size: 13,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
-                        ),
+                          Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
+                                borderRadius: BorderRadius.circular(20)),
+                            child: TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  integrationList
+                                      .remove(integrationList.toList()[index]);
+                                });
+                              },
+                              child: Text(
+                                integrationList.toList()[index],
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     );
                   } else {
