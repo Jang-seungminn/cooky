@@ -18,17 +18,20 @@ class DBProvider extends ChangeNotifier {
     Box box = await Hive.openBox<RecipeRows>(dataBox);
     await box.add(fovorite);
     _data = box.values.toList() as List<RecipeRows>;
+    notifyListeners();
   }
 
   Future<void> resetItems() async {
     Box box = await Hive.openBox<RecipeRows>(dataBox);
     await box.deleteFromDisk();
+    notifyListeners();
   }
 
   Future<void> updateItem(int key, HiveObject param) async {
     Box box = await Hive.openBox<RecipeRows>(dataBox);
     await box.put(key, param);
     _data = box.values.toList() as List<RecipeRows>;
+    notifyListeners();
   }
 
   Future<List> getItem() async {
@@ -42,5 +45,6 @@ class DBProvider extends ChangeNotifier {
     Box box = await Hive.openBox<RecipeRows>(dataBox);
     await box.delete(fovorite.key);
     _data = box.values.toList() as List<RecipeRows>;
+    notifyListeners();
   }
 }

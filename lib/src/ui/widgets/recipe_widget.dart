@@ -1,7 +1,7 @@
 import 'package:cooky/src/bloc/recipe_bloc.dart';
 import 'package:cooky/src/models/recipe_rows.dart';
 import 'package:cooky/src/providers/db_provider.dart';
-import 'package:cooky/src/ui/components/recipe_card.dart';
+import 'package:cooky/src/ui/components/recipe_button_widget.dart';
 import 'package:cooky/src/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,6 +36,12 @@ class _RecipeWidgetState extends State<RecipeWidget> {
   void dispose() {
     scrollController.dispose();
     super.dispose();
+  }
+
+  void changeFavoriteList(Set<int> favorite) {
+    setState(() {
+      favoriteIndexList = favorite;
+    });
   }
 
   @override
@@ -107,6 +113,7 @@ class _RecipeWidgetState extends State<RecipeWidget> {
             }
 
             if (state is RecipeSearchedState) {
+              favoriteIndexList = {};
               bool isFavorite = false;
 
               totalConut =
@@ -132,76 +139,12 @@ class _RecipeWidgetState extends State<RecipeWidget> {
                         } else {
                           isFavorite = false;
                         }
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              padding: const EdgeInsets.all(0),
-                              splashRadius: 15,
-                              onPressed: () async {
-                                if (favoriteIndexList.contains(index)) {
-                                  setState(() {
-                                    favoriteIndexList.remove(index);
-                                    for (var data in dbProvider.data) {
-                                      if (data.RCP_NM ==
-                                          state.rows[index].RCP_NM) {
-                                        dbProvider.removeItem(
-                                          data,
-                                        );
-                                      }
-                                    }
-                                  });
-                                } else {
-                                  setState(() {
-                                    favoriteIndexList.add(index);
-                                    dbProvider.getItem();
-
-                                    dbProvider.createItem(
-                                      state.rows[index],
-                                    );
-                                  });
-                                }
-                              },
-                              icon: Icon(
-                                isFavorite
-                                    ? Icons.favorite
-                                    : Icons.favorite_border_outlined,
-                                color: isFavorite
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.black,
-                              ),
-                            ),
-                            Flexible(
-                              child: TextButton(
-                                onPressed: () {
-                                  showDialog(
-                                    useSafeArea: true,
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      var recipePage =
-                                          state.rows[index].toMap();
-                                      recipePage.removeWhere(
-                                          (key, value) => key == 'HASHTAG');
-                                      recipePage.removeWhere(
-                                          (key, value) => value == "");
-
-                                      return Center(
-                                        child: RecipeCard(
-                                          recipeRows: recipePage,
-                                          itemCount:
-                                              recipePage.values.toList().length,
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                child: Text(
-                                  state.rows[index].RCP_NM,
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                              ),
-                            ),
-                          ],
+                        return RecipeButton(
+                          datas: state.rows,
+                          isFavorite: isFavorite,
+                          index: index,
+                          indexList: favoriteIndexList,
+                          changeFavoriteList: changeFavoriteList,
                         );
                       },
                     ),

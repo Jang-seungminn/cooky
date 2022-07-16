@@ -28,7 +28,7 @@ class RootPage extends StatelessWidget {
                 return const HomePage();
 
               case 1:
-                return const MyPage();
+                return MyPage();
 
               default:
                 return const CircularProgressIndicator();
