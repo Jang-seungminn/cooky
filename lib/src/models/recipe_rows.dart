@@ -183,11 +183,11 @@ class RecipeRows extends HiveObject {
       // 'RCP_WAY2': RCP_WAY2,
       // 'RCP_PAT2': RCP_PAT2,
       'INFOMATION': {
-        'INFO_NA': '나트륨 : $INFO_NA',
-        'INFO_WGT': INFO_WGT == "" ? "" : '중량(1인분) : $INFO_WGT',
+        'INFO_CAR': '탄수화물 : $INFO_CAR',
         'INFO_PRO': '단백질 : $INFO_PRO',
         'INFO_FAT': '지방 : $INFO_FAT',
-        'INFO_CAR': '탄수화물 : $INFO_CAR',
+        'INFO_NA': '나트륨 : $INFO_NA',
+        'INFO_WGT': INFO_WGT == "" ? "" : '중량(1인분) : $INFO_WGT',
         'INFO_ENG': '열량 : $INFO_ENG',
       },
       'HASHTAG': {

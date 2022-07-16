@@ -105,6 +105,13 @@ class _RecipeCardState extends State<RecipeCard> {
               ),
             );
           } else if (contentList.keys.toList().first.startsWith('INFO')) {
+            if (content.contains('열량')) {
+              content += ' kcal';
+            } else if (content.contains('나트륨')) {
+              content += ' mg';
+            } else {
+              content += ' g';
+            }
             widgetList.add(
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
