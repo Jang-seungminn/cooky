@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:cooky/src/models/recipe_model.dart';
+import 'package:cooky/src/models/recipe_rows.dart';
 import 'package:cooky/src/repositories/recipe_repository.dart';
 import 'package:cooky/src/utils/const.dart';
 import 'package:equatable/equatable.dart';

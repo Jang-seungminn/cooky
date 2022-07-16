@@ -1,5 +1,5 @@
 import 'package:cooky/src/bloc/recipe_bloc.dart';
-import 'package:cooky/src/models/favorite_model.dart';
+import 'package:cooky/src/models/recipe_rows.dart';
 import 'package:cooky/src/providers/db_provider.dart';
 import 'package:cooky/src/ui/components/recipe_card.dart';
 import 'package:cooky/src/utils/const.dart';
@@ -41,7 +41,7 @@ class _RecipeWidgetState extends State<RecipeWidget> {
   @override
   Widget build(BuildContext context) {
     dbProvider = Provider.of<DBProvider>(context, listen: false);
-    List<FavoriteModel> favoriteList = dbProvider.data;
+    List<RecipeRows> favoriteList = dbProvider.data;
 
     void changeIndex(String ch) {
       bool isChange = false;
@@ -123,7 +123,7 @@ class _RecipeWidgetState extends State<RecipeWidget> {
                       controller: scrollController,
                       itemBuilder: (context, index) {
                         for (var data in favoriteList) {
-                          if (data.recipeName == state.rows[index].RCP_NM) {
+                          if (data.RCP_NM == state.rows[index].RCP_NM) {
                             favoriteIndexList.add(index);
                           }
                         }
@@ -143,7 +143,7 @@ class _RecipeWidgetState extends State<RecipeWidget> {
                                   setState(() {
                                     favoriteIndexList.remove(index);
                                     for (var data in dbProvider.data) {
-                                      if (data.recipeName ==
+                                      if (data.RCP_NM ==
                                           state.rows[index].RCP_NM) {
                                         dbProvider.removeItem(
                                           data,
@@ -157,9 +157,7 @@ class _RecipeWidgetState extends State<RecipeWidget> {
                                     dbProvider.getItem();
 
                                     dbProvider.createItem(
-                                      FavoriteModel(
-                                        recipeName: state.rows[index].RCP_NM,
-                                      ),
+                                      state.rows[index],
                                     );
                                   });
                                 }

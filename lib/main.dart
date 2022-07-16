@@ -1,5 +1,5 @@
 import 'package:cooky/src/bloc/recipe_bloc.dart';
-import 'package:cooky/src/models/favorite_model.dart';
+import 'package:cooky/src/models/recipe_rows.dart';
 import 'package:cooky/src/providers/db_provider.dart';
 import 'package:cooky/src/providers/navigation_provider.dart';
 import 'package:cooky/src/repositories/recipe_repository.dart';
@@ -12,7 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   await Hive.initFlutter('cooky');
-  Hive.registerAdapter(FavoriteModelAdapter());
+  Hive.registerAdapter(RecipeRowsAdapter());
   runApp(
     MultiProvider(
       providers: [
